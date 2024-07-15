@@ -58,7 +58,8 @@ public final class UtpRequestQueue {
         this.available = true;
         this.queueIndex = new AtomicInteger(0);
         this.queues = new ArrayList<>(this.queueSize);
-        this.executor = SystemThreadContext.newExecutor(this.queueSize, this.queueSize, 10000, 60L, SystemThreadContext.SNAIL_THREAD_UTP_QUEUE);
+        int[] executor = {this.queueSize, this.queueSize, 10000};
+        this.executor = SystemThreadContext.newExecutor(executor, 60L, SystemThreadContext.SNAIL_THREAD_UTP_QUEUE);
         this.buildQueues();
         LOGGER.debug("启动UTP请求队列：{}", this.queueSize);
     }

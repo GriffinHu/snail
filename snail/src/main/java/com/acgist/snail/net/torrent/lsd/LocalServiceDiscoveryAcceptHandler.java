@@ -20,22 +20,20 @@ public final class LocalServiceDiscoveryAcceptHandler extends UdpAcceptHandler {
         return INSTANCE;
     }
     
-    /**
-     * 消息代理
-     */
-    private final LocalServiceDiscoveryMessageHandler localServiceDiscoveryMessageHandler = new LocalServiceDiscoveryMessageHandler();
+    /*Over-complicated name edit*/
+    private final LocalServiceDiscoveryMessageHandler MessageHandler = new LocalServiceDiscoveryMessageHandler();
     
     private LocalServiceDiscoveryAcceptHandler() {
     }
     
     @Override
     public void handle(DatagramChannel channel) {
-        this.localServiceDiscoveryMessageHandler.handle(channel);
+        this.MessageHandler.handle(channel);
     }
     
     @Override
     public UdpMessageHandler messageHandler(ByteBuffer buffer, InetSocketAddress socketAddress) {
-        return this.localServiceDiscoveryMessageHandler;
+        return this.MessageHandler;
     }
 
 }

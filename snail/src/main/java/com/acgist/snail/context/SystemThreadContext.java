@@ -97,10 +97,11 @@ public final class SystemThreadContext implements IContext {
     public static final int DEFAULT_THREAD_SIZE = Runtime.getRuntime().availableProcessors();
     
     static {
+        int[] executor = {SystemThreadContext.threadSize(4, 8),
+        SystemThreadContext.threadSize(16, 32),
+        Short.MAX_VALUE};
         EXECUTOR = SystemThreadContext.newExecutor(
-            SystemThreadContext.threadSize(4, 8),
-            SystemThreadContext.threadSize(16, 32),
-            Short.MAX_VALUE,
+            executor,
             60L,
             SNAIL_THREAD
         );
@@ -197,7 +198,12 @@ public final class SystemThreadContext implements IContext {
      * 
      * @return 固定线程池
      */
-    public static final ExecutorService newExecutor(int minPoolSize, int maxPoolSize, int queueSize, long keepAliveTime, String name) {
+    public static final ExecutorService newExecutor(int[] size, long keepAliveTime, String name) {
+        
+        int minPoolSize = size[0];
+        int maxPoolSize = size[1];
+        int queueSize = size[2];
+
         LOGGER.debug("新建固定线程池：{} - {} - {}", name, minPoolSize, maxPoolSize);
         return new ThreadPoolExecutor(
             minPoolSize,

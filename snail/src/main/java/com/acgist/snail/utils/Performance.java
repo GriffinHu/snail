@@ -92,10 +92,9 @@ public abstract class Performance {
      */
     protected final long costed(int count, int thread, Coster coster) {
         final CountDownLatch latch     = new CountDownLatch(count);
+        int[] executer = {thread, thread, count};
         final ExecutorService executor = SystemThreadContext.newExecutor(
-            thread,
-            thread,
-            count,
+            executer,
             60L,
             SystemThreadContext.SNAIL_THREAD_COSTED
         );

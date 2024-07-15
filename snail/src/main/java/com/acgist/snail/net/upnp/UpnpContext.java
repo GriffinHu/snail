@@ -260,7 +260,9 @@ public final class UpnpContext implements IContext {
      * 
      * @return 是否映射成功
      */
-    public boolean mapping() throws NetException {
+    
+     /*mapping() method swap */
+     public boolean mapping() throws NetException {
         if(!this.available) {
             return false;
         }
@@ -272,7 +274,11 @@ public final class UpnpContext implements IContext {
         }
         SystemConfig.setExternalIPAddress(externalIPAddress);
         NodeContext.getInstance().buildNodeId(externalIPAddress);
-        // 循环映射端口
+        // loop the mappings
+        return loopMapping();
+    }
+
+    private boolean loopMapping() throws NetException {
         Status tcpStatus;
         Status udpStatus = Status.DISABLE;
         final int torrentPort = SystemConfig.getTorrentPort();
@@ -293,22 +299,27 @@ public final class UpnpContext implements IContext {
                 portExt++;
             }
         }
+        return mappingResult(udpStatus,torrentPort,portExt);
+    }
+
+    private boolean mappingResult(Status udpStatus, int torrentPort,int portExt) throws NetException {
+
         if(udpStatus == Status.MAPABLE) {
             SystemConfig.setTorrentPortExt(portExt);
             final boolean udpOk = this.addPortMapping(torrentPort, portExt, Protocol.Type.UDP);
             final boolean tcpOk = this.addPortMapping(torrentPort, portExt, Protocol.Type.TCP);
-            LOGGER.debug("UPNP端口映射（注册）：UDP（{}-{}-{}）、TCP（{}-{}-{}）", torrentPort, portExt, udpOk, torrentPort, portExt, tcpOk);
+            LOGGER.debug("UDP（{}-{}-{}）、TCP（{}-{}-{}）", torrentPort, portExt, udpOk, torrentPort, portExt, tcpOk);
             return true;
         } else if(udpStatus == Status.USEABLE) {
             SystemConfig.setTorrentPortExt(portExt);
-            LOGGER.debug("UPNP端口映射（可用）：UDP（{}-{}）、TCP（{}-{}）", torrentPort, portExt, torrentPort, portExt);
+            LOGGER.debug("UDP（{}-{}）、TCP（{}-{}）", torrentPort, portExt, torrentPort, portExt);
             return true;
         } else {
-            LOGGER.warn("UPNP端口映射失败");
+            LOGGER.warn("fauilre");
             return false;
         }
     }
-    
+
     /**
      * 端口释放
      */

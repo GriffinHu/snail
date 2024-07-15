@@ -122,7 +122,8 @@ public final class HlsSession implements IMultifileCompletedChecker {
         // 修改开始下载：提交client需要判断
         this.downloadable  = true;
         final int poolSize = SystemThreadContext.DEFAULT_THREAD_SIZE;
-        this.executor      = SystemThreadContext.newExecutor(poolSize, poolSize, 10000, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
+        int[] executor     = {poolSize, poolSize, 10000};
+        this.executor      = SystemThreadContext.newExecutor(executor, 60L, SystemThreadContext.SNAIL_THREAD_HLS);
         synchronized (this.clients) {
             this.clients.forEach(this::download);
         }

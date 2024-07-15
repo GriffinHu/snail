@@ -39,7 +39,8 @@ class SystemThreadContextTest extends Performance {
         });
         latch.await();
         assertEquals(0, latch.getCount());
-        final var executor = SystemThreadContext.newExecutor(2, 10, 100, 10, "ACGIST");
+        int[] executer = {2, 10, 100};
+        final var executor = SystemThreadContext.newExecutor(executer, 10, "ACGIST");
         assertNotNull(executor);
     }
     
@@ -62,7 +63,8 @@ class SystemThreadContextTest extends Performance {
         final int size = 8;
         final AtomicInteger count = new AtomicInteger(0);
         final CountDownLatch down = new CountDownLatch(size - 1);
-        final var pool = SystemThreadContext.newExecutor(1, size - 2, 1, 60, "ACGIST");
+        int[] executor = {1, size - 2, 1};
+        final var pool = SystemThreadContext.newExecutor(executor, 60, "ACGIST");
         for (int index = 0; index < size; index++) {
             assertDoesNotThrow(() -> pool.submit(() -> {
                 down.countDown();
